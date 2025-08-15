@@ -9,7 +9,7 @@ servers:
     description: Local server
 
 paths:
-  /todos:
+  /todo:
     get:
       summary: Get a list of todos
       parameters:
@@ -79,7 +79,7 @@ paths:
         '400':
           description: Failed to save the todo
 
-  /todos/{id}:
+  /todo/{id}:
     get:
       summary: Get a todo by ID
       parameters:
