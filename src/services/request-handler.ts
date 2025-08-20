@@ -1,83 +1,45 @@
-export default class RequestHandler {
-  private url: string;
-  private baseUrl: string;
+import axios from "axios"
 
-  constructor(url: string) {
-    this.url = url;
-    this.baseUrl = import.meta.env.VITE_APP_API_URL;
+const API_URL = "https://service-profile.vercel.app"
+
+class RequestHandler {
+  private baseUrl: string
+
+  constructor(endpoint: string) {
+    this.baseUrl = `${API_URL}/${endpoint}`
   }
 
-  private buildUrl(endpoint?: string, params?: Record<string, unknown>) {
-    const url = new URL(
-      `${this.baseUrl}/${this.url}${endpoint ? `/${endpoint}` : ""}`
-    );
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value));
-      });
+  protected async get<T>(path = ""): Promise<T> {
+    try {
+      console.log("[v0] Fetching from:", `${this.baseUrl}${path}`)
+      const response = await axios.get(`${this.baseUrl}${path}`)
+      console.log("[v0] API Response:", response.data)
+      return response.data || []
+    } catch (error) {
+      console.error("[v0] Error fetching data:", error)
+      return [] as T
     }
-    return url.toString();
   }
 
-  get(params?: Record<string, unknown>) {
-    return new Promise((resolve, reject) => {
-      fetch(this.buildUrl(undefined, params), {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(resolve)
-        .catch(reject);
-    });
+  protected async post<T>(path = "", data: any): Promise<T> {
+    const response = await axios.post(`${this.baseUrl}${path}`, data)
+    return response.data
   }
 
-  find(param: string) {
-    return new Promise((resolve, reject) => {
-      fetch(this.buildUrl(param), {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(resolve)
-        .catch(reject);
-    });
+  protected async put<T>(path = "", data: any): Promise<T> {
+    const response = await axios.put(`${this.baseUrl}${path}`, data)
+    return response.data
   }
 
-  store(body: Record<string, unknown>) {
-    return new Promise((resolve, reject) => {
-      fetch(this.buildUrl(), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(resolve)
-        .catch(reject);
-    });
+  protected async patch<T>(path = "", data: any): Promise<T> {
+    const response = await axios.patch(`${this.baseUrl}${path}`, data)
+    return response.data
   }
 
-  update(id: string, body: Record<string, unknown>) {
-    return new Promise((resolve, reject) => {
-      fetch(this.buildUrl(id), {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(resolve)
-        .catch(reject);
-    });
-  }
-
-  delete(id: string) {
-    return new Promise((resolve, reject) => {
-      fetch(this.buildUrl(id), {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(resolve)
-        .catch(reject);
-    });
+  protected async delete<T>(path = ""): Promise<T> {
+    const response = await axios.delete(`${this.baseUrl}${path}`)
+    return response.data
   }
 }
+
+export default RequestHandler
