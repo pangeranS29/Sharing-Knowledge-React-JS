@@ -129,6 +129,8 @@ const useTodoStore = create<TodoStore>((set, get) => ({
     const todo = get().todos.find((t) => t.id === id)
     if (todo) {
       await get().updateTodo(id, {
+        title: todo.title,
+        description: todo.description,
         completed: !todo.completed,
       })
     }

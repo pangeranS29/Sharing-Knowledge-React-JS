@@ -118,7 +118,7 @@ export function TodoTableCard() {
                     <TableCell>
                       <input
                         type="checkbox"
-                        checked={todo.completed}
+                        checked={Boolean(todo.completed)}
                         onChange={() => toggleComplete(todo.id)}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
@@ -157,7 +157,7 @@ export function TodoTableCard() {
           <div className="text-sm text-muted-foreground">
             Showing{" "}
             <strong>
-              {paginatedTodos.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}-
+              {paginatedTodos.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}-{" "}
               {Math.min(currentPage * itemsPerPage, filteredTodos.length)}
             </strong>{" "}
             of <strong>{filteredTodos.length}</strong> tasks
